@@ -1,3 +1,5 @@
+use upselling::domain::{self, Error};
+
 /// # Find potential upsells
 /// As an insurance company, we try to sell as many insurance policies as possible.
 ///
@@ -65,6 +67,8 @@
 /// [{"person_id": "P1", "vehicle_id": "V3"}]
 /// ```
 
-fn main() {
-    println!("Hello, world!");
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    dbg!(domain::find_potential_upsells(vec![])?);
+    Ok(())
 }
