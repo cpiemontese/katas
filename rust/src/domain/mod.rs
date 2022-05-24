@@ -6,8 +6,8 @@ use thiserror::Error;
 
 use self::{policy::Policy, upsell_opportunity::UpsellOpportunity};
 
-pub type PersonId = String;
-pub type VehicleId = String;
+pub type PersonId = &'static str;
+pub type VehicleId = &'static str;
 
 #[derive(Debug, Error)]
 pub enum Error {}

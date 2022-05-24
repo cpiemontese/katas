@@ -3,7 +3,7 @@ use getset::Getters;
 
 use super::{PersonId, VehicleId};
 
-#[derive(Getters, new)]
+#[derive(Clone, Getters, new)]
 pub struct OwnedVehicle {
     person_id: PersonId,
     vehicle_id: VehicleId,
