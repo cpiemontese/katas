@@ -1,4 +1,7 @@
-use upselling::domain::{self, Error};
+use upselling::{
+    domain::{policy::Policy, Error, Upselling},
+    services::vehicles::OwnedVehicleAPI,
+};
 
 /// # Find potential upsells
 /// As an insurance company, we try to sell as many insurance policies as possible.
@@ -69,6 +72,13 @@ use upselling::domain::{self, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    dbg!(domain::find_potential_upsells(vec![])?);
+    let owned_vehicle_api = OwnedVehicleAPI::new();
+    let upselling = Upselling::new(owned_vehicle_api);
+
+    let policies = vec![
+        Policy::new("P1".to_string(), "V8".to_string()),
+        Policy::new("P2".to_string(), "V6".to_string()),
+    ];
+    dbg!(upselling.find_potential_upsells(policies).await?);
     Ok(())
 }
