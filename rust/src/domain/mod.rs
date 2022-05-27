@@ -36,7 +36,7 @@ impl Upselling {
             .filter(|owned_vehicle| {
                 policies
                     .iter()
-                    .any(|policy| policy.vehicle_id() == owned_vehicle.vehicle_id())
+                    .all(|policy| policy.vehicle_id() != owned_vehicle.vehicle_id())
             })
             .map(|owned_vehicle| UpsellOpportunity::from(owned_vehicle))
             .collect();
