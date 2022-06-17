@@ -41,6 +41,6 @@ impl OwnedVehicleAPI {
                     .cloned()
                     .unwrap_or_default()
             })
-            .collect()
+            .collect::<Vec<OwnedVehicle>>()
     }
 }

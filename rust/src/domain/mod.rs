@@ -25,13 +25,14 @@ impl Upselling {
         &self,
         policies: Vec<Policy>,
     ) -> Result<Vec<UpsellOpportunity>, Error> {
-        let person_ids: Vec<PersonId> = policies
+        let person_ids = policies
             .iter()
             .map(|policy| policy.person_id())
             .cloned()
-            .collect();
+            .collect::<Vec<PersonId>>();
+
         let owned_vehicles = self.owned_vehicle_api.get_owned_vehicles(&person_ids).await;
-        let upsell_opportunities: Vec<UpsellOpportunity> = owned_vehicles
+        let upsell_opportunities = owned_vehicles
             .iter()
             .filter(|owned_vehicle| {
                 policies
@@ -39,7 +40,7 @@ impl Upselling {
                     .all(|policy| policy.vehicle_id() != owned_vehicle.vehicle_id())
             })
             .map(|owned_vehicle| UpsellOpportunity::from(owned_vehicle))
-            .collect();
+            .collect::<Vec<UpsellOpportunity>>();
 
         Ok(upsell_opportunities)
     }
