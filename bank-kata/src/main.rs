@@ -24,15 +24,15 @@
 /// struct Account;
 ///
 /// impl Account {
-///     pub fn deposit(amount: i32) -> () {
+///     pub fn deposit(&self, amount: i32) -> () {
 ///         todo!()
 ///     }
 ///
-///     pub fn withdraw(amount: i32) -> () {
+///     pub fn withdraw(&self, amount: i32) -> () {
 ///         todo!()
 ///     }
 ///
-///     pub fn print_statement() -> () {
+///     pub fn print_statement(&self) -> () {
 ///         todo!()
 ///     }
 /// }
