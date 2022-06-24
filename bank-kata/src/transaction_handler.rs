@@ -2,31 +2,42 @@ use std::vec;
 
 use chrono::Utc;
 
-pub struct TransactionHandler {
-    total: i32,
-    history: Vec<String>,
+#[cfg(test)]
+use mockall::automock;
+
+#[derive(Debug)]
+pub struct TransactionHistoryElement {
+    transaction_type: TransactionType,
+    amount: i32,
+    date: String,
 }
 
-enum TransactionType {
+#[derive(Debug, PartialEq)]
+pub enum TransactionType {
     Deposit,
     Withdraw,
 }
 
-impl TransactionHandler {
-    pub fn new() -> Self {
-        TransactionHandler {
-            total: 0,
-            history: vec![],
-        }
-    }
+#[cfg_attr(test, automock)]
+pub trait TransactionHandler {
+    fn deposit(&mut self, amount: i32) -> &mut Self;
+    fn withdraw(&mut self, amount: i32) -> &mut Self;
+    fn history(&self) -> &Vec<TransactionHistoryElement>;
+}
 
-    pub fn deposit(&mut self, amount: i32) -> &mut Self {
+pub struct TransactionHandlerImpl {
+    total: i32,
+    history: Vec<TransactionHistoryElement>,
+}
+
+impl TransactionHandler for TransactionHandlerImpl {
+    fn deposit(&mut self, amount: i32) -> &mut Self {
         self.total += amount;
         self.add_transaction(amount, TransactionType::Deposit);
         self
     }
 
-    pub fn withdraw(&mut self, amount: i32) -> &mut Self {
+    fn withdraw(&mut self, amount: i32) -> &mut Self {
         if self.total >= amount {
             self.total -= amount;
             self.add_transaction(amount, TransactionType::Withdraw);
@@ -34,35 +45,26 @@ impl TransactionHandler {
         self
     }
 
-    fn add_transaction(&mut self, amount: i32, transaction_type: TransactionType) -> &mut Self {
-        let sign = if let TransactionType::Withdraw = transaction_type {
-            "-"
-        } else {
-            ""
-        };
-
-        self.history.push(format!(
-            "{} | {}{} | {}",
-            Utc::now().naive_utc().date().to_string(),
-            sign,
-            amount,
-            self.total
-        ));
-        self
+    fn history(&self) -> &Vec<TransactionHistoryElement> {
+        &self.history
     }
 }
 
-impl std::fmt::Display for TransactionHandler {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        writeln!(f, "DATE | AMOUNT | TOTAL")?;
-        for (i, h) in self.history.iter().enumerate() {
-            if i == self.history.len() - 1 {
-                write!(f, "{}", h)?
-            } else {
-                writeln!(f, "{}", h)?
-            }
+impl TransactionHandlerImpl {
+    fn new() -> Self {
+        TransactionHandlerImpl {
+            total: 0,
+            history: vec![],
         }
-        Ok(())
+    }
+
+    fn add_transaction(&mut self, amount: i32, transaction_type: TransactionType) -> &mut Self {
+        self.history.push(TransactionHistoryElement {
+            transaction_type,
+            amount,
+            date: Utc::now().naive_utc().date().to_string(),
+        });
+        self
     }
 }
 
@@ -70,60 +72,64 @@ impl std::fmt::Display for TransactionHandler {
 mod tests {
     use chrono::Utc;
 
-    use super::TransactionHandler;
+    use super::*;
 
     #[test]
     fn can_deposit() {
-        let mut th = TransactionHandler::new();
+        let mut th = TransactionHandlerImpl::new();
         th.deposit(10);
         assert_eq!(th.total, 10);
     }
 
     #[test]
     fn can_withdraw_if_has_funds() {
-        let mut th = TransactionHandler::new();
+        let mut th = TransactionHandlerImpl::new();
         th.deposit(10).withdraw(10);
         assert_eq!(th.total, 0);
     }
 
     #[test]
     fn cannot_withdraw_if_has_no_funds() {
-        let mut th = TransactionHandler::new();
+        let mut th = TransactionHandlerImpl::new();
         th.withdraw(10);
         assert_eq!(th.total, 0);
     }
 
     #[test]
     fn records_history_of_transactions() {
-        let mut th = TransactionHandler::new();
-        th.deposit(10).withdraw(10).deposit(20);
-        assert_eq!(th.total, 20);
-        assert_eq!(th.history.len(), 3);
-        let today = Utc::now().naive_utc().date().to_string();
-        assert_eq!(
-            th.history,
-            vec![
-                format!("{} | 10 | 10", today),
-                format!("{} | -10 | 0", today),
-                format!("{} | 20 | 20", today)
-            ]
-        );
-    }
-
-    #[test]
-    fn formats_on_print() {
-        let mut th = TransactionHandler::new();
+        let mut th = TransactionHandlerImpl::new();
         th.deposit(10).withdraw(10).deposit(20);
         assert_eq!(th.total, 20);
         assert_eq!(th.history.len(), 3);
         let today = Utc::now().naive_utc().date().to_string();
 
+        let mut history_iter = th.history().iter();
+
+        let first_transaction = history_iter
+            .next()
+            .expect("First element should be present");
+
+        assert_eq!(first_transaction.transaction_type, TransactionType::Deposit);
+        assert_eq!(first_transaction.amount, 10);
+        assert_eq!(first_transaction.date, today);
+
+        let second_transaction = history_iter
+            .next()
+            .expect("Second element should be present");
+
         assert_eq!(
-            th.to_string(),
-            format!(
-                "DATE | AMOUNT | TOTAL\n{} | 10 | 10\n{} | -10 | 0\n{} | 20 | 20",
-                today, today, today
-            )
+            second_transaction.transaction_type,
+            TransactionType::Withdraw
         );
+        assert_eq!(second_transaction.amount, 10);
+        assert_eq!(second_transaction.date, today);
+
+        let third_transaction = history_iter
+            .next()
+            .expect("Third element should be present");
+
+        assert_eq!(third_transaction.transaction_type, TransactionType::Deposit);
+        assert_eq!(third_transaction.amount, 20);
+        assert_eq!(third_transaction.date, today);
     }
 }
