@@ -7,9 +7,9 @@ use mockall::automock;
 
 #[derive(Debug)]
 pub struct TransactionHistoryElement {
-    transaction_type: TransactionType,
-    amount: i32,
-    date: String,
+    pub transaction_type: TransactionType,
+    pub amount: i32,
+    pub date: String,
 }
 
 #[derive(Debug, PartialEq)]
@@ -20,26 +20,31 @@ pub enum TransactionType {
 
 #[cfg_attr(test, automock)]
 pub trait TransactionHandler {
+    fn balance(&self) -> i32;
     fn deposit(&mut self, amount: i32) -> &mut Self;
     fn withdraw(&mut self, amount: i32) -> &mut Self;
     fn history(&self) -> &Vec<TransactionHistoryElement>;
 }
 
 pub struct TransactionHandlerImpl {
-    total: i32,
+    balance: i32,
     history: Vec<TransactionHistoryElement>,
 }
 
 impl TransactionHandler for TransactionHandlerImpl {
+    fn balance(&self) -> i32 {
+        self.balance
+    }
+
     fn deposit(&mut self, amount: i32) -> &mut Self {
-        self.total += amount;
+        self.balance += amount;
         self.add_transaction(amount, TransactionType::Deposit);
         self
     }
 
     fn withdraw(&mut self, amount: i32) -> &mut Self {
-        if self.total >= amount {
-            self.total -= amount;
+        if self.balance >= amount {
+            self.balance -= amount;
             self.add_transaction(amount, TransactionType::Withdraw);
         }
         self
@@ -53,7 +58,7 @@ impl TransactionHandler for TransactionHandlerImpl {
 impl TransactionHandlerImpl {
     fn new() -> Self {
         TransactionHandlerImpl {
-            total: 0,
+            balance: 0,
             history: vec![],
         }
     }
@@ -78,28 +83,28 @@ mod tests {
     fn can_deposit() {
         let mut th = TransactionHandlerImpl::new();
         th.deposit(10);
-        assert_eq!(th.total, 10);
+        assert_eq!(th.balance, 10);
     }
 
     #[test]
     fn can_withdraw_if_has_funds() {
         let mut th = TransactionHandlerImpl::new();
         th.deposit(10).withdraw(10);
-        assert_eq!(th.total, 0);
+        assert_eq!(th.balance, 0);
     }
 
     #[test]
     fn cannot_withdraw_if_has_no_funds() {
         let mut th = TransactionHandlerImpl::new();
         th.withdraw(10);
-        assert_eq!(th.total, 0);
+        assert_eq!(th.balance, 0);
     }
 
     #[test]
     fn records_history_of_transactions() {
         let mut th = TransactionHandlerImpl::new();
         th.deposit(10).withdraw(10).deposit(20);
-        assert_eq!(th.total, 20);
+        assert_eq!(th.balance, 20);
         assert_eq!(th.history.len(), 3);
         let today = Utc::now().naive_utc().date().to_string();
 
