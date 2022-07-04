@@ -9,6 +9,7 @@ use mockall::automock;
 pub struct TransactionHistoryElement {
     pub transaction_type: TransactionType,
     pub amount: i32,
+    pub balance: i32,
     pub date: String,
 }
 
@@ -20,7 +21,6 @@ pub enum TransactionType {
 
 #[cfg_attr(test, automock)]
 pub trait TransactionHandler {
-    fn balance(&self) -> i32;
     fn deposit(&mut self, amount: i32) -> &mut Self;
     fn withdraw(&mut self, amount: i32) -> &mut Self;
     fn history(&self) -> &Vec<TransactionHistoryElement>;
@@ -32,10 +32,6 @@ pub struct TransactionHandlerImpl {
 }
 
 impl TransactionHandler for TransactionHandlerImpl {
-    fn balance(&self) -> i32 {
-        self.balance
-    }
-
     fn deposit(&mut self, amount: i32) -> &mut Self {
         self.balance += amount;
         self.add_transaction(amount, TransactionType::Deposit);
@@ -67,7 +63,8 @@ impl TransactionHandlerImpl {
         self.history.push(TransactionHistoryElement {
             transaction_type,
             amount,
-            date: Utc::now().naive_utc().date().to_string(),
+            balance: self.balance,
+            date: Utc::now().naive_utc().date().format("%d/%m/%Y").to_string(),
         });
         self
     }
@@ -116,6 +113,7 @@ mod tests {
 
         assert_eq!(first_transaction.transaction_type, TransactionType::Deposit);
         assert_eq!(first_transaction.amount, 10);
+        assert_eq!(first_transaction.balance, 10);
         assert_eq!(first_transaction.date, today);
 
         let second_transaction = history_iter
@@ -127,6 +125,7 @@ mod tests {
             TransactionType::Withdraw
         );
         assert_eq!(second_transaction.amount, 10);
+        assert_eq!(second_transaction.balance, 0);
         assert_eq!(second_transaction.date, today);
 
         let third_transaction = history_iter
@@ -135,6 +134,7 @@ mod tests {
 
         assert_eq!(third_transaction.transaction_type, TransactionType::Deposit);
         assert_eq!(third_transaction.amount, 20);
+        assert_eq!(third_transaction.balance, 20);
         assert_eq!(third_transaction.date, today);
     }
 }

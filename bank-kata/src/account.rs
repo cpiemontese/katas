@@ -30,7 +30,7 @@ where
 
         println!("DATE | AMOUNT | TOTAL");
 
-        for (i, h) in history.iter().enumerate() {
+        for (i, h) in history.iter().rev().enumerate() {
             let transaction_string = self.transaction_to_string(h);
             if i == history.len() - 1 {
                 print!("{}", transaction_string)
@@ -52,7 +52,7 @@ where
             transaction.date.as_str(),
             sign,
             transaction.amount,
-            self.transaction_handler.balance()
+            transaction.balance,
         )
     }
 }
