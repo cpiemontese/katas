@@ -67,13 +67,37 @@ mod tests {
 
     #[test]
     fn can_deposit() {
-        let mock = MockTransactionHandler::new()
-            .expect_deposit()
+        let mut mock = MockTransactionHandler::new();
+        mock.expect_deposit()
             .with(eq(10))
-            .times(1);
+            .times(1)
+            .returning(|_| MockTransactionHandler::default());
+
+        let mut account = Account::new(mock);
+
+        account.deposit(10);
+    }
+
+    #[test]
+    fn can_withdraw() {
+        let mut mock = MockTransactionHandler::new();
+        mock.expect_withdraw()
+            .with(eq(10))
+            .times(1)
+            .returning(|_| MockTransactionHandler::default());
+
+        let mut account = Account::new(mock);
+
+        account.withdraw(10);
+    }
+
+    #[test]
+    fn can_print_statement() {
+        let mut mock = MockTransactionHandler::new();
+        mock.expect_history().times(1).return_const(vec![]);
 
         let account = Account::new(mock);
 
-        account.deposit(10);
+        account.print_statement();
     }
 }

@@ -1,3 +1,5 @@
+use bank_kata::{account::Account, transaction_handler::TransactionHandlerImpl};
+
 /// Problem description
 ///
 /// Create a simple bank application with the following features:
@@ -43,5 +45,10 @@
 /// 4. Don't worry about spacing in the printed statement (optionally format)
 
 fn main() {
-    println!("Hello, world!");
+    let transaction_handler = TransactionHandlerImpl::new();
+    let mut account = Account::new(transaction_handler);
+    account.deposit(1000);
+    account.withdraw(100);
+    account.deposit(500);
+    account.print_statement();
 }

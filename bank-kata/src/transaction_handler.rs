@@ -56,7 +56,7 @@ impl TransactionHandler for TransactionHandlerImpl {
 }
 
 impl TransactionHandlerImpl {
-    fn new() -> Self {
+    pub fn new() -> Self {
         TransactionHandlerImpl {
             balance: 0,
             history: vec![],
