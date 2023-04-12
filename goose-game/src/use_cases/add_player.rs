@@ -1,5 +1,7 @@
 use crate::domain::{Game, Player};
 
-pub fn add_player(game: Game, _player: Player) -> Game {
-    game
+impl Game {
+    pub fn add_player(&mut self, _player: Player) -> Game {
+        *self
+    }
 }

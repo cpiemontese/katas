@@ -9,6 +9,9 @@ impl Game {
     }
 
     pub fn players(&self) -> Vec<Player> {
-        vec![Player::new("Pippo".to_string())]
+        vec![
+            Player::new("Pippo".to_string()),
+            Player::new("Pluto".to_string()),
+        ]
     }
 }
