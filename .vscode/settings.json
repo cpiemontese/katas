@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./goose-game/Cargo.toml",
+    ]
+}
