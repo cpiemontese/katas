@@ -16,3 +16,17 @@ fn it_adds_two_players_to_the_game() {
 
     assert_eq!(game.players().len(), 2);
 }
+
+#[test]
+fn it_returns_error_when_adding_duplicate_player() {
+    let player_pippo = Player::new("Pippo".to_string());
+
+    let result = Game::new()
+        .add_player(player_pippo)
+        .map(op)
+        .add_player(player_pippo);
+
+    assert!(result.ok());
+
+    assert_eq!(game.players().len(), 1);
+}
