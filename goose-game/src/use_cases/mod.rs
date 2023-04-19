@@ -1,1 +1,1 @@
-mod add_player;
+pub mod add_player;

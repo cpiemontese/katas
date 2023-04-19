@@ -1,23 +1,32 @@
+use std::collections::HashMap;
+
 use crate::domain::Player;
 
-#[derive(Clone, Copy)]
-pub struct Game;
-
-#[derive(thiserror::Error, Debug, Clone)]
-pub enum GameError {
-    #[error("Tried to add duplicate player.")]
-    TriedToAddDuplicatePlayer(String),
+#[derive(Clone)]
+pub struct Game {
+    players: HashMap<String, Player>,
 }
 
 impl Game {
     pub fn new() -> Self {
-        Game {}
+        Game {
+            players: HashMap::new(),
+        }
+    }
+
+    pub(crate) fn add_player(&mut self, player: Player) -> bool {
+        if self.players.contains_key(&player.name()) {
+            return false;
+        }
+        self.players.insert(player.name(), player);
+        true
     }
 
     pub fn players(&self) -> Vec<Player> {
-        vec![
-            Player::new("Pippo".to_string()),
-            Player::new("Pluto".to_string()),
-        ]
+        self.players
+            .clone()
+            .into_iter()
+            .map(|(_name, player)| player)
+            .collect()
     }
 }
