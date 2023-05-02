@@ -53,6 +53,10 @@ impl Location {
         Location(0)
     }
 
+    pub fn end_location() -> Self {
+        Location(63)
+    }
+
     pub(crate) fn add_roll(self, roll: Roll) -> Self {
         let mut new_location = self.0 + roll.total();
         if new_location > 63 {

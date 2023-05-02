@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::domain::Player;
+use crate::domain::{Location, Player};
 
 #[derive(Clone, Default)]
 pub struct Game {
@@ -28,6 +28,13 @@ impl Game {
 
     pub(crate) fn update_player(&mut self, player: Player) {
         self.players.insert(player.name(), player);
+    }
+
+    pub fn is_winner(&self, player_name: String) -> bool {
+        match self.get_player(player_name) {
+            Some(player) => player.location() == Location::end_location(),
+            None => false,
+        }
     }
 
     pub fn players(&self) -> Vec<Player> {
