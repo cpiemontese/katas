@@ -22,6 +22,14 @@ impl Game {
         true
     }
 
+    pub(crate) fn get_player(&self, player_name: String) -> Option<Player> {
+        self.players.get(&player_name).map(|p| p.to_owned())
+    }
+
+    pub(crate) fn update_player(&mut self, player: Player) {
+        self.players.insert(player.name(), player);
+    }
+
     pub fn players(&self) -> Vec<Player> {
         self.players
             .clone()

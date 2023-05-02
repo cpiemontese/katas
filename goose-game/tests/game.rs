@@ -1,7 +1,13 @@
 use goose_game::{
-    domain::{Game, Player},
-    use_cases::add_player::add_player_to_game,
+    domain::{Game, Location, Player, Roll},
+    use_cases::{add_player::add_player_to_game, move_player::move_player_with_roll},
 };
+
+use crate::test_api::{
+    find_player, get_die, is_number_of_players_expected, is_player_at_expected_location,
+};
+
+mod test_api;
 
 #[test]
 fn it_adds_two_players_to_the_game() {
@@ -20,7 +26,7 @@ fn it_adds_two_players_to_the_game() {
     assert!(players.contains(&Player::new("Pippo".to_string())));
     assert!(players.contains(&Player::new("Pluto".to_string())));
 
-    assert_eq!(players.len(), 2);
+    assert!(is_number_of_players_expected(&game, 2));
 }
 
 #[test]
@@ -35,5 +41,29 @@ fn it_returns_error_when_adding_duplicate_player() {
     let result = add_player_to_game(&mut game, player_pippo);
     assert!(result.is_err());
 
-    assert_eq!(game.players().len(), 1);
+    assert!(is_number_of_players_expected(&game, 1));
+}
+
+#[test]
+fn it_moves_player_successfully() {
+    let player_pippo: Player = Player::new("Pippo".to_string());
+
+    let mut game = Game::new();
+
+    let roll = Roll::new(get_die(4), get_die(2));
+
+    let result = add_player_to_game(&mut game, player_pippo.clone());
+    assert!(result.is_ok());
+
+    let result = move_player_with_roll(&mut game, player_pippo.name(), roll);
+    assert!(result.is_ok());
+
+    let moved_player =
+        dbg!(find_player(&game, player_pippo.name()).expect("Player not added to game"));
+    let expected_location = Location::new(6).expect("Couldn't create location");
+
+    assert!(is_player_at_expected_location(
+        &moved_player,
+        &expected_location
+    ))
 }
