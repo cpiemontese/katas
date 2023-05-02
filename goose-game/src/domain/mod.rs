@@ -61,7 +61,7 @@ impl Location {
         let mut new_location = self.0 + roll.total();
         if new_location > 63 {
             let cells_to_retrocede_by = new_location - 63;
-            new_location -= cells_to_retrocede_by;
+            new_location = 63 - cells_to_retrocede_by;
         }
         Location(new_location)
     }

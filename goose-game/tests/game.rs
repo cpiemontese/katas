@@ -80,3 +80,27 @@ fn it_marks_player_as_winner_when_63rd_cell_is_reached() {
 
     assert!(game.is_winner(player_pippo.name()));
 }
+
+#[test]
+fn it_bounces_player_if_it_overshoots() {
+    let mut player_pippo: Player = Player::new("Pippo".to_string());
+    player_pippo.set_location(Location::new(60).expect("Failed to setup player location"));
+
+    let mut game = Game::new();
+
+    let result = add_player_to_game(&mut game, player_pippo.clone());
+    assert!(result.is_ok());
+
+    let roll = Roll::new(Die::Six, Die::Six);
+    let result = move_player_with_roll(&mut game, player_pippo.name(), roll);
+    assert!(result.is_ok());
+
+    let moved_player =
+        dbg!(find_player(&game, player_pippo.name()).expect("Player not added to game"));
+    let expected_location = Location::new(54).expect("Couldn't create location");
+
+    assert!(is_player_at_expected_location(
+        &moved_player,
+        &expected_location
+    ))
+}
