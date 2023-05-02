@@ -1,11 +1,9 @@
 use goose_game::{
-    domain::{Game, Location, Player, Roll},
+    domain::{Die, Game, Location, Player, Roll},
     use_cases::{add_player::add_player_to_game, move_player::move_player_with_roll},
 };
 
-use crate::test_api::{
-    find_player, get_die, is_number_of_players_expected, is_player_at_expected_location,
-};
+use crate::test_api::{find_player, is_number_of_players_expected, is_player_at_expected_location};
 
 mod test_api;
 
@@ -50,7 +48,7 @@ fn it_moves_player_successfully() {
 
     let mut game = Game::new();
 
-    let roll = Roll::new(get_die(4), get_die(2));
+    let roll = Roll::new(Die::Four, Die::Two);
 
     let result = add_player_to_game(&mut game, player_pippo.clone());
     assert!(result.is_ok());

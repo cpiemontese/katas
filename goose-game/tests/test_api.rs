@@ -1,4 +1,4 @@
-use goose_game::domain::{Die, Game, Location, Player};
+use goose_game::domain::{Game, Location, Player};
 
 pub fn is_number_of_players_expected(game: &Game, expected_len: usize) -> bool {
     game.players().len() == expected_len
@@ -13,8 +13,4 @@ pub fn find_player(game: &Game, player_name: String) -> Option<Player> {
         .iter()
         .find(|p| p.name() == player_name)
         .cloned()
-}
-
-pub fn get_die(value: u8) -> Die {
-    Die::new(value).expect("Couldn't create Die")
 }

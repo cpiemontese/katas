@@ -4,23 +4,21 @@ mod player;
 pub use game::*;
 pub use player::Player;
 
-#[derive(Clone, Debug)]
-pub struct Die(u8);
-
-impl Die {
-    pub fn new(value: u8) -> Result<Self, String> {
-        if !(1..6).contains(&value) {
-            return Err(format!("Cannot create 6-sided die with value {}", value));
-        }
-        Ok(Die(value))
-    }
+#[derive(Clone, Copy, Debug)]
+pub enum Die {
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+    Six = 6,
 }
 
 impl std::ops::Add<Die> for Die {
     type Output = u8;
 
     fn add(self, rhs: Die) -> u8 {
-        self.0 + rhs.0
+        (self as u8) + (rhs as u8)
     }
 }
 
@@ -36,7 +34,7 @@ impl Roll {
     }
 
     pub(crate) fn total(&self) -> u8 {
-        self.die1.0 + self.die2.0
+        (self.die1 as u8) + (self.die2 as u8)
     }
 }
 
