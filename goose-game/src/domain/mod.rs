@@ -6,6 +6,8 @@ pub use die::*;
 pub use game::*;
 pub use player::Player;
 
+const BRIDGE_LOCATION: u8 = 6;
+
 pub trait DiceRoller {
     fn roll(&self) -> Roll;
 }
@@ -44,20 +46,24 @@ impl Location {
         Ok(Location(cell))
     }
 
-    pub fn starting_location() -> Self {
+    pub fn start() -> Self {
         Location(0)
     }
 
-    pub fn end_location() -> Self {
+    pub fn end() -> Self {
         Location(63)
     }
 
-    pub(crate) fn add_roll(self, roll: Roll) -> Self {
+    pub(crate) fn add_roll(&self, roll: Roll) -> Self {
         let mut new_location = self.0 + roll.total();
-        if new_location > 63 {
+
+        if new_location == BRIDGE_LOCATION {
+            new_location = 12;
+        } else if new_location > 63 {
             let cells_to_retrocede_by = new_location - 63;
             new_location = 63 - cells_to_retrocede_by;
         }
+
         Location(new_location)
     }
 }

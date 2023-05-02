@@ -125,9 +125,30 @@ fn it_bounces_player_if_it_overshoots() {
     let result = move_player_with_roll(&mut game, player_pippo.name(), roll);
     assert!(result.is_ok());
 
-    let moved_player =
-        dbg!(find_player(&game, player_pippo.name()).expect("Player not added to game"));
+    let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
     let expected_location = Location::new(54).expect("Couldn't create location");
+
+    assert!(is_player_at_expected_location(
+        &moved_player,
+        &expected_location
+    ))
+}
+
+#[test]
+fn player_moves_to_12_if_bridge_is_reached() {
+    let player_pippo: Player = Player::new("Pippo".to_string());
+
+    let mut game = Game::new();
+
+    let result = add_player_to_game(&mut game, player_pippo.clone());
+    assert!(result.is_ok());
+
+    let roll = Roll::new(Die::Three, Die::Three);
+    let result = move_player_with_roll(&mut game, player_pippo.name(), roll);
+    assert!(result.is_ok());
+
+    let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
+    let expected_location = Location::new(12).expect("Couldn't create location");
 
     assert!(is_player_at_expected_location(
         &moved_player,

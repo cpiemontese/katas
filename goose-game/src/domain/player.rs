@@ -10,7 +10,7 @@ impl Player {
     pub fn new(name: String) -> Self {
         Player {
             name,
-            location: Location::starting_location(),
+            location: Location::start(),
         }
     }
 
