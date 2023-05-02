@@ -1,6 +1,6 @@
 use super::Location;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Player {
     name: String,
     location: Location,

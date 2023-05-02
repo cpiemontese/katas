@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::domain::Player;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Game {
     players: HashMap<String, Player>,
 }
