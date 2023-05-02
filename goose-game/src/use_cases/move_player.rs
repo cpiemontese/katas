@@ -17,3 +17,7 @@ pub fn move_player_with_roll(
         None => Err(GameError::PlayerNotFound),
     }
 }
+
+pub fn move_player(game: &mut Game, player_name: String) -> Result<(), GameError> {
+    move_player_with_roll(game, player_name, Roll::random())
+}

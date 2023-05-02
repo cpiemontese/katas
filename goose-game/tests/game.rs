@@ -1,6 +1,9 @@
 use goose_game::{
     domain::{Die, Game, Location, Player, Roll},
-    use_cases::{add_player::add_player_to_game, move_player::move_player_with_roll},
+    use_cases::{
+        add_player::add_player_to_game,
+        move_player::{move_player, move_player_with_roll},
+    },
 };
 
 use crate::test_api::{find_player, is_number_of_players_expected, is_player_at_expected_location};
@@ -62,6 +65,23 @@ fn it_moves_player_successfully() {
         &moved_player,
         &expected_location
     ))
+}
+
+#[test]
+fn it_moves_player_without_input() {
+    let player_pippo: Player = Player::new("Pippo".to_string());
+
+    let mut game = Game::new();
+
+    let result = add_player_to_game(&mut game, player_pippo.clone());
+    assert!(result.is_ok());
+
+    let result = move_player(&mut game, player_pippo.name());
+    assert!(result.is_ok());
+
+    let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
+
+    assert!(moved_player.location() != Location::starting_location())
 }
 
 #[test]

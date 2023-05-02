@@ -1,26 +1,10 @@
+mod die;
 mod game;
 mod player;
 
+pub use die::*;
 pub use game::*;
 pub use player::Player;
-
-#[derive(Clone, Copy, Debug)]
-pub enum Die {
-    One = 1,
-    Two = 2,
-    Three = 3,
-    Four = 4,
-    Five = 5,
-    Six = 6,
-}
-
-impl std::ops::Add<Die> for Die {
-    type Output = u8;
-
-    fn add(self, rhs: Die) -> u8 {
-        (self as u8) + (rhs as u8)
-    }
-}
 
 #[derive(Clone, Debug)]
 pub struct Roll {
@@ -31,6 +15,13 @@ pub struct Roll {
 impl Roll {
     pub fn new(die1: Die, die2: Die) -> Self {
         Roll { die1, die2 }
+    }
+
+    pub fn random() -> Self {
+        Roll {
+            die1: Die::random(),
+            die2: Die::random(),
+        }
     }
 
     pub(crate) fn total(&self) -> u8 {
