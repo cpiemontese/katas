@@ -1,4 +1,4 @@
-use crate::domain::{Game, Roll};
+use crate::domain::{DiceRoller, Game, Roll};
 
 use super::GameError;
 
@@ -18,6 +18,10 @@ pub fn move_player_with_roll(
     }
 }
 
-pub fn move_player(game: &mut Game, player_name: String) -> Result<(), GameError> {
-    move_player_with_roll(game, player_name, Roll::random())
+pub fn move_player(
+    game: &mut Game,
+    dice_roller: &dyn DiceRoller,
+    player_name: String,
+) -> Result<(), GameError> {
+    move_player_with_roll(game, player_name, dice_roller.roll())
 }

@@ -1,4 +1,20 @@
-use goose_game::domain::{Game, Location, Player};
+use goose_game::domain::{DiceRoller, Game, Location, Player, Roll};
+
+pub struct RiggedDiceRoller {
+    roll: Roll,
+}
+
+impl RiggedDiceRoller {
+    pub fn new(roll: Roll) -> Self {
+        RiggedDiceRoller { roll }
+    }
+}
+
+impl DiceRoller for RiggedDiceRoller {
+    fn roll(&self) -> Roll {
+        self.roll.clone()
+    }
+}
 
 pub fn is_number_of_players_expected(game: &Game, expected_len: usize) -> bool {
     game.players().len() == expected_len

@@ -6,6 +6,10 @@ pub use die::*;
 pub use game::*;
 pub use player::Player;
 
+pub trait DiceRoller {
+    fn roll(&self) -> Roll;
+}
+
 #[derive(Clone, Debug)]
 pub struct Roll {
     die1: Die,

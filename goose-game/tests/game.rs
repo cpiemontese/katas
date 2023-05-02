@@ -6,7 +6,9 @@ use goose_game::{
     },
 };
 
-use crate::test_api::{find_player, is_number_of_players_expected, is_player_at_expected_location};
+use crate::test_api::{
+    find_player, is_number_of_players_expected, is_player_at_expected_location, RiggedDiceRoller,
+};
 
 mod test_api;
 
@@ -76,12 +78,20 @@ fn it_moves_player_without_input() {
     let result = add_player_to_game(&mut game, player_pippo.clone());
     assert!(result.is_ok());
 
-    let result = move_player(&mut game, player_pippo.name());
+    let result = move_player(
+        &mut game,
+        &RiggedDiceRoller::new(Roll::new(Die::One, Die::One)),
+        player_pippo.name(),
+    );
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
 
-    assert!(moved_player.location() != Location::starting_location())
+    let expected_location = Location::new(2).expect("Couldn't create location");
+    assert!(is_player_at_expected_location(
+        &moved_player,
+        &expected_location
+    ))
 }
 
 #[test]
