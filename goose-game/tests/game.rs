@@ -56,12 +56,12 @@ fn it_moves_player_successfully() {
     let result = add_player_to_game(&mut game, player_pippo.clone());
     assert!(result.is_ok());
 
-    let roll = Roll::new(Die::Four, Die::Two);
+    let roll = Roll::new(Die::Two, Die::One);
     let result = move_player_with_roll(&mut game, player_pippo.name(), roll);
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
-    let expected_location = Location::new(6).expect("Couldn't create location");
+    let expected_location = Location::new(3).expect("Couldn't create location");
 
     assert!(is_player_at_expected_location(
         &moved_player,
