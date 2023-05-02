@@ -53,13 +53,12 @@ impl Location {
         Location(0)
     }
 
-    pub(crate) fn add_roll(mut self, roll: Roll) -> Self {
+    pub(crate) fn add_roll(self, roll: Roll) -> Self {
         let mut new_location = self.0 + roll.total();
         if new_location > 63 {
             let cells_to_retrocede_by = new_location - 63;
             new_location -= cells_to_retrocede_by;
         }
-        self.0 = new_location;
-        self
+        Location(new_location)
     }
 }
