@@ -1,14 +1,15 @@
-use crate::domain::{DiceRoller, Game, Roll};
+use crate::domain::{DiceRoller, Game};
 
 use super::GameError;
 
-pub fn move_player_with_roll(
+pub fn move_player(
     game: &mut Game,
+    dice_roller: &dyn DiceRoller,
     player_name: String,
-    roll: Roll,
 ) -> Result<(), GameError> {
     match game.get_player(player_name).as_mut() {
         Some(player) => {
+            let roll = dice_roller.roll();
             let new_location = player.location().add_roll(roll);
             player.set_location(new_location);
             game.update_player(player.clone());
@@ -16,12 +17,4 @@ pub fn move_player_with_roll(
         }
         None => Err(GameError::PlayerNotFound),
     }
-}
-
-pub fn move_player(
-    game: &mut Game,
-    dice_roller: &dyn DiceRoller,
-    player_name: String,
-) -> Result<(), GameError> {
-    move_player_with_roll(game, player_name, dice_roller.roll())
 }

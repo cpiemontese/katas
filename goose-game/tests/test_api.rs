@@ -1,4 +1,7 @@
-use goose_game::domain::{DiceRoller, Game, Location, Player, Roll};
+use goose_game::{
+    domain::{DiceRoller, Game, Location, Player, Roll},
+    use_cases::{move_player, GameError},
+};
 
 pub struct RiggedDiceRoller {
     roll: Roll,
@@ -29,4 +32,12 @@ pub fn find_player(game: &Game, player_name: String) -> Option<Player> {
         .iter()
         .find(|p| p.name() == player_name)
         .cloned()
+}
+
+pub fn move_player_with_roll(
+    game: &mut Game,
+    player_name: String,
+    roll: Roll,
+) -> Result<(), GameError> {
+    move_player::move_player(game, &RiggedDiceRoller::new(roll), player_name)
 }

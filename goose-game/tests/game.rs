@@ -1,13 +1,11 @@
 use goose_game::{
     domain::{Die, Game, Location, Player, Roll},
-    use_cases::{
-        add_player::add_player_to_game,
-        move_player::{move_player, move_player_with_roll},
-    },
+    use_cases::{add_player::add_player_to_game, move_player::move_player},
 };
 
 use crate::test_api::{
-    find_player, is_number_of_players_expected, is_player_at_expected_location, RiggedDiceRoller,
+    find_player, is_number_of_players_expected, is_player_at_expected_location,
+    move_player_with_roll, RiggedDiceRoller,
 };
 
 mod test_api;
