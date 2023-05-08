@@ -1,0 +1,43 @@
+[package]
+description = "Test"
+edition = "2021"
+name = "Test"
+version = "0.1.0"
+default-run = "Test"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4.*"
+actix-web-httpauth = "0.8.*"
+
+async-graphql = {version = "5.*", features = ["time"]}
+async-graphql-actix-web = "5.*"
+
+# rt-tokio-current-thread is needed because actix_web::main, spawns a tokio current thread scheduler
+prima-tracing = { version = "0.5.*", features = ["prima-telemetry", "rt-tokio-current-thread"] }
+prima_datadog = "0.5.*"
+tracing = {version = "0.1.*", features = ["max_level_debug", "release_max_level_info"]}
+tracing-actix-web = {version = "0.7.*", features = ["opentelemetry_0_17"]}
+
+sqlx = {version = "0.6.*", features = ["postgres", "runtime-tokio-native-tls", "uuid", "json", "time", "migrate", "offline"]}
+tokio = "1.*"
+
+jwks_client_rs = "0.4.*"
+
+# Misc
+anyhow = "1.*"
+dotenv = "0.15.*"
+envy = "0.4.*"
+serde = "1.*"
+serde_with = "3.*"
+strum = "0.24.*"
+strum_macros = "0.24.*"
+thiserror = "1.*"
+url = {version = "2.*", features = ["serde"]}
+
+[dev-dependencies]
+reqwest = "0.11.*"
+serde_json = "1.*"
+time = "0.3.*"
+uuid = {version = "1.*", features = ["v4"]}
