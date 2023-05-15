@@ -158,3 +158,23 @@ fn player_moves_again_if_goose_is_reached() {
 
     assert_eq!(moved_player.location(), expected_location);
 }
+
+#[test]
+fn player_can_double_move_if_goose_is_reached() {
+    let mut player_pippo: Player = Player::new("Pippo".to_string());
+    player_pippo.set_location(Location::new(10).expect("Failed to setup player location"));
+
+    let mut game = Game::new();
+
+    let result = add_player_to_game(&mut game, player_pippo.clone());
+    assert!(result.is_ok());
+
+    let roll = Roll::new(Die::Two, Die::Two);
+    let result = move_player_with_roll(&mut game, player_pippo.name(), roll);
+    assert!(result.is_ok());
+
+    let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
+    let expected_location = Location::new(22).expect("Couldn't create location");
+
+    assert_eq!(moved_player.location(), expected_location);
+}

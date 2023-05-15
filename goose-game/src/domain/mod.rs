@@ -59,10 +59,14 @@ impl Location {
         let mut new_location = self.0 + roll.total();
 
         if new_location == BRIDGE_LOCATION {
-            new_location = 12;
-        } else if GOOSE_LOCATIONS.contains(&new_location) {
+            return Location(12);
+        }
+
+        while GOOSE_LOCATIONS.contains(&new_location) {
             new_location += roll.total();
-        } else if new_location > 63 {
+        }
+
+        if new_location > 63 {
             let cells_to_retrocede_by = new_location - 63;
             new_location = 63 - cells_to_retrocede_by;
         }
