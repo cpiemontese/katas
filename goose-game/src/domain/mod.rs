@@ -7,6 +7,7 @@ pub use game::*;
 pub use player::Player;
 
 const BRIDGE_LOCATION: u8 = 6;
+const GOOSE_LOCATIONS: [u8; 6] = [5, 9, 14, 18, 23, 27];
 
 pub trait DiceRoller {
     fn roll(&self) -> Roll;
@@ -59,6 +60,8 @@ impl Location {
 
         if new_location == BRIDGE_LOCATION {
             new_location = 12;
+        } else if GOOSE_LOCATIONS.contains(&new_location) {
+            new_location += roll.total();
         } else if new_location > 63 {
             let cells_to_retrocede_by = new_location - 63;
             new_location = 63 - cells_to_retrocede_by;
