@@ -6,6 +6,7 @@ pub use die::*;
 pub use game::*;
 pub use player::Player;
 
+const WINNING_CELL: u8 = 63;
 const BRIDGE_LOCATION: u8 = 6;
 const GOOSE_LOCATIONS: [u8; 6] = [5, 9, 14, 18, 23, 27];
 
@@ -40,11 +41,13 @@ impl Roll {
 pub struct Location(u8);
 
 impl Location {
-    pub fn new(cell: u8) -> Result<Self, String> {
-        if !(0..63).contains(&cell) {
-            return Err("Location must be between 0 and 63".to_string());
+    pub fn new(cell: u8) -> Self {
+        if cell > 63 {
+            let cells_to_retrocede_by = cell - WINNING_CELL;
+            return Location(WINNING_CELL - cells_to_retrocede_by);
         }
-        Ok(Location(cell))
+
+        Location(cell)
     }
 
     pub fn start() -> Self {
@@ -52,7 +55,7 @@ impl Location {
     }
 
     pub fn end() -> Self {
-        Location(63)
+        Location(WINNING_CELL)
     }
 
     pub(crate) fn add_roll(&self, roll: Roll) -> Self {
@@ -66,9 +69,9 @@ impl Location {
             new_location += roll.total();
         }
 
-        if new_location > 63 {
-            let cells_to_retrocede_by = new_location - 63;
-            new_location = 63 - cells_to_retrocede_by;
+        if new_location > WINNING_CELL {
+            let cells_to_retrocede_by = new_location - WINNING_CELL;
+            new_location = WINNING_CELL - cells_to_retrocede_by;
         }
 
         Location(new_location)

@@ -56,7 +56,7 @@ fn it_moves_player_successfully() {
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
-    let expected_location = Location::new(3).expect("Couldn't create location");
+    let expected_location = Location::new(3);
 
     assert_eq!(moved_player.location(), expected_location);
 }
@@ -79,7 +79,7 @@ fn it_moves_player_without_input() {
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
 
-    let expected_location = Location::new(2).expect("Couldn't create location");
+    let expected_location = Location::new(2);
 
     assert_eq!(moved_player.location(), expected_location);
 }
@@ -87,7 +87,7 @@ fn it_moves_player_without_input() {
 #[test]
 fn it_marks_player_as_winner_when_63rd_cell_is_reached() {
     let mut player_pippo: Player = Player::new("Pippo".to_string());
-    player_pippo.set_location(Location::new(60).expect("Failed to setup player location"));
+    player_pippo.set_location(Location::new(60));
 
     let mut game = Game::new();
 
@@ -104,7 +104,7 @@ fn it_marks_player_as_winner_when_63rd_cell_is_reached() {
 #[test]
 fn it_bounces_player_if_it_overshoots() {
     let mut player_pippo: Player = Player::new("Pippo".to_string());
-    player_pippo.set_location(Location::new(60).expect("Failed to setup player location"));
+    player_pippo.set_location(Location::new(60));
 
     let mut game = Game::new();
 
@@ -116,7 +116,7 @@ fn it_bounces_player_if_it_overshoots() {
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
-    let expected_location = Location::new(54).expect("Couldn't create location");
+    let expected_location = Location::new(54);
 
     assert_eq!(moved_player.location(), expected_location);
 }
@@ -135,7 +135,7 @@ fn player_moves_to_12_if_bridge_is_reached() {
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
-    let expected_location = Location::new(12).expect("Couldn't create location");
+    let expected_location = Location::new(12);
 
     assert_eq!(moved_player.location(), expected_location);
 }
@@ -154,7 +154,7 @@ fn player_moves_again_if_goose_is_reached() {
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
-    let expected_location = Location::new(10).expect("Couldn't create location");
+    let expected_location = Location::new(10);
 
     assert_eq!(moved_player.location(), expected_location);
 }
@@ -162,7 +162,7 @@ fn player_moves_again_if_goose_is_reached() {
 #[test]
 fn player_can_double_move_if_goose_is_reached() {
     let mut player_pippo: Player = Player::new("Pippo".to_string());
-    player_pippo.set_location(Location::new(10).expect("Failed to setup player location"));
+    player_pippo.set_location(Location::new(10));
 
     let mut game = Game::new();
 
@@ -174,7 +174,7 @@ fn player_can_double_move_if_goose_is_reached() {
     assert!(result.is_ok());
 
     let moved_player = find_player(&game, player_pippo.name()).expect("Player not added to game");
-    let expected_location = Location::new(22).expect("Couldn't create location");
+    let expected_location = Location::new(22);
 
     assert_eq!(moved_player.location(), expected_location);
 }
