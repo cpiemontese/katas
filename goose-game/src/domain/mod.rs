@@ -8,6 +8,7 @@ pub use player::Player;
 
 const WINNING_CELL: u8 = 63;
 const BRIDGE_LOCATION: u8 = 6;
+const AFTER_BRIDGE_LOCATION: u8 = 12;
 const GOOSE_LOCATIONS: [u8; 6] = [5, 9, 14, 18, 23, 27];
 
 pub trait DiceRoller {
@@ -50,30 +51,36 @@ impl Location {
         Location(cell)
     }
 
-    pub fn start() -> Self {
+    pub fn starting_location() -> Self {
         Location(0)
     }
 
-    pub fn end() -> Self {
-        Location(WINNING_CELL)
+    pub fn after_landing_on_bridge() -> Self {
+        Location(AFTER_BRIDGE_LOCATION)
     }
 
-    pub(crate) fn add_roll(&self, roll: Roll) -> Self {
-        let mut new_location = self.0 + roll.total();
+    pub fn is_winning_location(&self) -> bool {
+        self.0 == WINNING_CELL
+    }
 
-        if new_location == BRIDGE_LOCATION {
-            return Location(12);
-        }
+    pub fn is_bridge_location(&self) -> bool {
+        self.0 == BRIDGE_LOCATION
+    }
 
-        while GOOSE_LOCATIONS.contains(&new_location) {
-            new_location += roll.total();
-        }
+    pub fn has_exceeded_winning_location(&self) -> bool {
+        self.0 > WINNING_CELL
+    }
 
-        if new_location > WINNING_CELL {
-            let cells_to_retrocede_by = new_location - WINNING_CELL;
-            new_location = WINNING_CELL - cells_to_retrocede_by;
-        }
+    pub fn is_a_goose_location(&self) -> bool {
+        GOOSE_LOCATIONS.contains(&self.0)
+    }
 
-        Location(new_location)
+    pub fn bounce(&self) -> Self {
+        let cells_to_retrocede_by = self.0 - WINNING_CELL;
+        Location(WINNING_CELL - cells_to_retrocede_by)
+    }
+
+    pub fn add_roll(&self, roll: &Roll) -> Self {
+        Location(self.0 + roll.total())
     }
 }

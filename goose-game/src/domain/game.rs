@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::domain::{Location, Player};
+use crate::domain::Player;
 
 pub struct Game {
     players: HashMap<String, Player>,
@@ -31,7 +31,7 @@ impl Game {
 
     pub fn is_winner(&self, player_name: String) -> bool {
         match self.get_player(player_name) {
-            Some(player) => player.location() == Location::end(),
+            Some(player) => player.location().is_winning_location(),
             None => false,
         }
     }
